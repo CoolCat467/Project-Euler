@@ -40,7 +40,7 @@ def sieve(n: int) -> NDArray[np.int64]:
     Based on https://stackoverflow.com/a/49936915/18995127.
     """
     flags = np.ones(n, dtype=np.bool)
-    flags[0:1] = False
+    flags[0:2] = False
     for i in range(2, math.floor(math.sqrt(n)) + 1):
         if flags[i]:
             flags[i * i :: i] = False
@@ -49,13 +49,13 @@ def sieve(n: int) -> NDArray[np.int64]:
 
 def run() -> None:
     """Run program."""
-    ##n = 13195
+    # n = 13195
     n = 600851475143
     search = math.floor(math.sqrt(n)) + 1
     primes = sieve(search)
 
     factors = []
-    for prime in primes[1:]:
+    for prime in primes:
         if n % prime == 0:
             factors.append(int(prime))
     print(f"Prime factors of {n}: {factors}")

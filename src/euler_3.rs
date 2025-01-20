@@ -46,15 +46,20 @@ fn sieve(n: usize) -> Vec<usize> {
 
 pub fn main() {
     // Define the number for which we want to find prime factors
+    // let n = 13195;
     let n = 600851475143;
-    let search = (n as f64).sqrt() as usize + 1; // Calculate the upper limit for the sieve
-    let primes = sieve(search); // Get the list of prime numbers
+    // Calculate the upper limit for the sieve
+    let search = (n as f64).sqrt() as usize + 1;
+    // Get the list of prime numbers
+    let primes = sieve(search);
+
+    // println!("{:?}", primes);
 
     // let mut factors = Vec::new();
     let mut greatest_factor = 1;
 
     // Check each prime number to see if it is a factor of n
-    for &prime in &primes[1..] {
+    for &prime in &primes {
         if n % prime == 0 {
             // factors.push(prime);
             greatest_factor = prime;
