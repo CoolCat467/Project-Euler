@@ -19,11 +19,20 @@ repos:
       - id: check-added-large-files
       - id: sort-simple-yaml
         files: .pre-commit-config.yaml
-  - repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.0
+  - repo: local
     hooks:
-       - id: fmt
-       - id: cargo-check
+      - id: rustfmt
+        name: rustfmt
+        description: Format rust code
+        entry: cargo fmt --all -- --color always
+        language: rust
+        pass_filenames: false
+      - id: cargo-check
+        name: cargo-check
+        description: Run cargo check
+        entry: cargo check
+        language: rust
+        pass_filenames: false
   - repo: https://github.com/CoolCat467/badgie
     rev: v0.9.6
     hooks:
