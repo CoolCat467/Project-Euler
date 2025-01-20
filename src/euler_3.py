@@ -39,7 +39,7 @@ def sieve(n: int) -> NDArray[np.int64]:
 
     Based on https://stackoverflow.com/a/49936915/18995127.
     """
-    flags = np.ones(n, dtype=np.bool)
+    flags = np.ones(n + 1, dtype=np.bool)
     flags[0:2] = False
     for i in range(2, math.floor(math.sqrt(n)) + 1):
         if flags[i]:
