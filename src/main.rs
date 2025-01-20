@@ -20,7 +20,7 @@
 use std::env;
 
 mod euler_1;
-// mod euler_2;
+mod euler_2;
 
 fn print_license() {
     println!("Project Euler\n");
@@ -65,7 +65,7 @@ fn main() {
     // Match the problem number to the corresponding function
     match problem_number {
         1 => euler_1::main(),
-        // 2 => euler_2::main(),
+        2 => euler_2::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
 }
