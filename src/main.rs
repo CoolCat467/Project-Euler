@@ -21,6 +21,7 @@ use std::env;
 
 mod euler_1;
 mod euler_10;
+mod euler_11;
 mod euler_2;
 mod euler_3;
 mod euler_4;
@@ -82,6 +83,7 @@ fn main() {
         8 => euler_8::main(),
         9 => euler_9::main(),
         10 => euler_10::main(),
+        11 => euler_11::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
 }
