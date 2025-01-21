@@ -1,4 +1,4 @@
-// Project Euler - Problem 3
+// Project Euler - Problem 11
 
 // Programmed by CoolCat467
 
