@@ -17,13 +17,15 @@
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+use std::cmp::max;
+
 pub fn sieve(n: usize) -> Vec<usize> {
     //! Return prime numbers up to n using Sieve of Eratosthenes.
     //!
     //! Based on https://stackoverflow.com/a/49936915/18995127.
 
     // Create a vector of boolean flags initialized to true
-    let mut flags = vec![true; n + 1];
+    let mut flags = vec![true; max(2, n) + 1];
     flags[0] = false; // 0 is not a prime number
     flags[1] = false; // 1 is not a prime number
 
@@ -47,3 +49,20 @@ pub fn sieve(n: usize) -> Vec<usize> {
         .filter_map(|(index, &is_prime)| if is_prime { Some(index) } else { None })
         .collect()
 }
+
+// pub fn factors(n: usize) -> Vec<usize> {
+//     //! Return prime factors of n
+//     let search = (n as f64).sqrt() as usize + 1;
+//     // Get the list of prime numbers up to sqrt(n)
+//     let primes = sieve(search);
+
+//     let mut factors = Vec::new();
+
+//     // Check each prime number to see if it is a factor of n
+//     for &prime in &primes {
+//         if n % prime == 0 {
+//             factors.push(prime);
+//         }
+//     }
+//     factors
+// }

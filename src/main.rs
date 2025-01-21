@@ -18,6 +18,7 @@
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::env;
+use std::time::Instant;
 
 mod eratosthenes;
 mod euler_1;
@@ -73,6 +74,8 @@ fn main() {
         }
     };
 
+    let start = Instant::now();
+
     // Match the problem number to the corresponding function
     match problem_number {
         1 => euler_1::main(),
@@ -89,4 +92,6 @@ fn main() {
         12 => euler_12::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
+
+    println!("Took {:?}", start.elapsed());
 }
