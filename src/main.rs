@@ -25,6 +25,7 @@ mod euler_3;
 mod euler_4;
 mod euler_5;
 mod euler_6;
+mod euler_7;
 
 fn print_license() {
     println!("Project Euler\n");
@@ -74,6 +75,7 @@ fn main() {
         4 => euler_4::main(),
         5 => euler_5::main(),
         6 => euler_6::main(),
+        7 => euler_7::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
 }
