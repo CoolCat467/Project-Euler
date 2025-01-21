@@ -22,6 +22,7 @@ use std::env;
 mod euler_1;
 mod euler_2;
 mod euler_3;
+mod euler_4;
 
 fn print_license() {
     println!("Project Euler\n");
@@ -68,6 +69,7 @@ fn main() {
         1 => euler_1::main(),
         2 => euler_2::main(),
         3 => euler_3::main(),
+        4 => euler_4::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
 }
