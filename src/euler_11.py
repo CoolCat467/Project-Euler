@@ -26,7 +26,7 @@ __license__ = "GNU General Public License Version 3"
 
 
 def find_greatest_product(
-    matrix: list[list[int]],
+    matrix: list[tuple[int, ...]],
     chain_length: int,
 ) -> int:
     """Return the largest product of chains of given length in matrix."""
@@ -95,7 +95,7 @@ def run() -> None:
     )
 
     length = 4
-    matrix: list[list[int]] = [
+    matrix: list[tuple[int, ...]] = [
         tuple(map(int, line.split(" "))) for line in data
     ]
 

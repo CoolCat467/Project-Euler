@@ -1,10 +1,10 @@
-"""Project Euler - Problem 11 Prototype."""
+"""Project Euler - Problem 13 Prototype."""
 
 # Programmed by CoolCat467
 
 from __future__ import annotations
 
-# Project Euler - Problem 11 Prototype
+# Project Euler - Problem 13 Prototype
 # Copyright (C) 2025  CoolCat467
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ from __future__ import annotations
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__title__ = "Project Euler - Problem 11 Prototype"
+__title__ = "Project Euler - Problem 13 Prototype"
 __author__ = "CoolCat467"
 __license__ = "GNU General Public License Version 3"
 
