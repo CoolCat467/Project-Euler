@@ -25,12 +25,13 @@ __author__ = "CoolCat467"
 __license__ = "GNU General Public License Version 3"
 
 
-def best_sum(structure: tuple[tuple[int, ...]]) -> int:
+def best_sum(structure: tuple[tuple[int, ...], ...]) -> int:
     """Return sum of best path down triangle.
 
     More accurately, UP the triangle.
     """
     buffer = [0] * (len(structure[-1]))
+    row: tuple[int, ...]
     for row in reversed(structure[1:]):
         for col, val in enumerate(row[:-1]):
             buffer[col] = max(
