@@ -27,6 +27,7 @@ mod euler_11;
 mod euler_12;
 mod euler_14;
 mod euler_2;
+mod euler_21;
 mod euler_3;
 mod euler_4;
 mod euler_5;
@@ -92,6 +93,7 @@ fn main() {
         11 => euler_11::main(),
         12 => euler_12::main(),
         14 => euler_14::main(),
+        21 => euler_21::main(),
         _ => eprintln!("Problem {} not implemented.", problem_number),
     }
 
