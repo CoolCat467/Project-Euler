@@ -140,48 +140,95 @@ def split_by(
     return ret
 
 
+##def number_to_text(data: int) -> str:
+##    """Convert number to string."""
+##    # Remember if negative
+##    is_negative = False
+##    if data < 0:
+##        data = abs(data)
+##        is_negative = True
+##
+##    revfull = {int(v): k for k, v in FULL.items()}
+##
+##    if data == 0:
+##        return revfull[data]
+##    del revfull[0]  # otherwise zero division later
+##
+##    revsing = {int(v): k for k, v in SINGLE.items()}
+##
+##    # get parts of full
+##    split = split_by(data, tuple(revfull.keys()), True)
+##    text = ""
+##    if is_negative:
+##        text += "negative "
+##
+##    # keep track of numbers left to represent
+##    left = data
+##    for k, val in split.items():
+##        left -= val * k
+##        # If data to represent in this chunk > 100
+##        ##        if data - left > 100:
+##        # Get 100s, 10s, and 1s
+##        kval = split_by(val, (100, 10, 1), True)
+##        if 100 in kval:
+##            text += revsing[kval[100]] + " " + revfull[100] + " "
+##        if 10 in kval:
+##            text += revfull[kval[10] * 10] + " "
+##        ##        if 1 in kval:  # and left > 10:
+##        parts = split_by(kval[1], revsing.keys(), True)
+##        if left > 10 or k >= 100:
+##            text += " ".join(revsing[pk] for pk in parts) + " "
+##        text += revfull[k] + " "
+##        if k == 100:
+##            text += "and "
+##    return text[:-1].removesuffix(" and")  # no trailing space
+
+
 def number_to_text(data: int) -> str:
-    """Convert number to string."""
-    # Remember if negative
-    is_negative = False
-    if data < 0:
-        data = abs(data)
-        is_negative = True
-
-    revfull = {int(v): k for k, v in FULL.items()}
-
+    """Convert number to string in British English format."""
     if data == 0:
-        return revfull[data]
-    del revfull[0]  # otherwise zero division later
+        return "zero"
 
+    # Dictionaries for number words
+    revfull = {int(v): k for k, v in FULL.items()}
     revsing = {int(v): k for k, v in SINGLE.items()}
 
-    # get parts of full
-    split = split_by(data, tuple(revfull.keys()), True)
-    text = ""
-    if is_negative:
-        text += "negative "
+    # Place value names
+    place_layers = [
+        (1_000_000_000_000, "trillion"),
+        (1_000_000_000, "billion"),
+        (1_000_000, "million"),
+        (1_000, "thousand"),
+    ]
 
-    # keep track of numbers left to represent
-    left = data
-    for k, val in split.items():
-        left -= val * k
-        # If data to represent in this chunk > 100
-        ##        if data - left > 100:
-        # Get 100s, 10s, and 1s
-        kval = split_by(val, (100, 10, 1), True)
-        if 100 in kval:
-            text += revsing[kval[100]] + " " + revfull[100] + " "
-        if 10 in kval:
-            text += revfull[kval[10] * 10] + " "
-        ##        if 1 in kval:  # and left > 10:
-        parts = split_by(kval[1], revsing.keys(), True)
-        if left > 10 or k >= 100:
-            text += " ".join(revsing[pk] for pk in parts) + " "
-        text += revfull[k] + " "
-        if k == 100:
-            text += "and "
-    return text[:-1].removesuffix(" and")  # no trailing space
+    parts = []
+
+    if data < 0:
+        parts.append("negative")
+        data = -data
+
+    # Process each place value
+    for value, name in place_layers:
+        if data >= value:
+            count, data = divmod(data, value)
+            parts.append(number_to_text(count) + " " + name)
+
+    # Handle hundreds
+    if data >= 100:
+        hundreds, data = divmod(data, 100)
+        parts.append(revsing[hundreds] + " hundred")
+        if data > 0:
+            parts.append("and")
+
+    # Handle tens and units
+    if data >= 20:
+        tens, data = divmod(data, 10)
+        parts.append(revfull[tens * 10])
+
+    if data > 0:
+        parts.append(revfull[data])
+
+    return " ".join(parts)
 
 
 # def number_to_text(data:int) -> str:
