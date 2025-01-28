@@ -22,6 +22,12 @@ warn_unreachable = true
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
+[tool.codespell]
+skip = "**/*.txt"
+
+[tool.typos.files]
+extend-exclude = ["src/*.txt"]
+
 [tool.black]
 line-length = 79
 
