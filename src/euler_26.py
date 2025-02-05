@@ -25,6 +25,7 @@ __author__ = "CoolCat467"
 __license__ = "GNU General Public License Version 3"
 
 
+from collections import Counter
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -136,51 +137,62 @@ def long_division_cycle(
     numerator: int,
     denominator: int,
     base: int = 10,
-) -> tuple[tuple[int | None, ...], tuple[int, ...]]:
-    """Return digits before cycle and cyclical digit sequence."""
-    start = []
-    gen = long_division(numerator, denominator, base)
-    for digit in gen:
-        start.append(digit)
-        if digit is None:
-            break
-    digits, cycle = find_cycle(int(x) for x in gen if x is not None)
-    return (tuple(start) + digits), cycle
+) -> int:
+    """Return digits in long division cycle."""
+    num = list(decompose(numerator, base))
+    current = 0
+    given_decimal = False
+    last_through = True
+
+    remainder_table: Counter[int] = Counter()
+
+    digit_place = 0
+
+    while num or current:
+        if num:
+            current *= base
+            current += num.pop(0)
+        elif current < denominator:
+            current *= base
+            if not given_decimal:
+                given_decimal = True
+                last_through = False
+                # Indicate decimal point
+            ##                yield None
+            elif last_through:
+                last_through = False
+            else:
+                digit_place += 1
+            ##                yield 0
+
+            continue
+        if current == 0:
+            digit_place += 1
+            ##            yield 0
+            continue
+        if current >= denominator:
+            div, current = divmod(current, denominator)
+            digit_place += 1
+            ##            yield div
+            last_through = True
+            if remainder_table[current]:
+                return digit_place - remainder_table[current]
+            remainder_table[current] = digit_place
+    return 0
 
 
 def run() -> None:
     """Run program."""
-    ##    value = ''
-    ##    post_decimal = False
-    ##    digits = []
-    ##    limit = 47*3
-    ##    for digit in long_division(1, 326):
-    ##        limit -= 1
-    ##        if limit <= 0:
-    ##            break
-    ##        if digit is None:
-    ##            value += "."
-    ##            post_decimal = True
-    ##            continue
-    ##        if post_decimal:
-    ##            digits.append(digit)
-    ##        value += f'{digit}'
-    ##    print(value)
-    ##    print(f'{digits = }')
-    ##    print(f'{find_cycle(digits) = }')
-    print(f"{long_division_cycle(1, 326) = }")
+    print(f"{long_division_cycle(1, 7) = }")
 
-
-##    longest_d = 1
-##    best_cycle_length = 0
-##    for d in range(2, 1000):
-####        print(f'{d = }')
-##        _equal, cycle = long_division_cycle(1, d)
-##        cycle_len = len(cycle)
-##        if cycle_len > best_cycle_length:
-##            best_cycle_length = cycle_len
-##            longest_d = d
-##    print(f'{best_cycle_length = } {longest_d = }')
+    longest_d = 1
+    best_cycle_length = 0
+    for d in range(2, 1000):
+        cycle_len = long_division_cycle(1, d)
+        if cycle_len > best_cycle_length:
+            best_cycle_length = cycle_len
+            longest_d = d
+    print(f"{best_cycle_length = } {longest_d = }")
 
 
 if __name__ == "__main__":
