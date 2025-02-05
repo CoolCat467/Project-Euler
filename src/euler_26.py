@@ -25,11 +25,10 @@ __author__ = "CoolCat467"
 __license__ = "GNU General Public License Version 3"
 
 
-from collections import Counter
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator
 
 
 def decompose_big_endian(
@@ -53,84 +52,23 @@ def long_division(
     base: int = 10,
 ) -> Generator[int | None, None, None]:
     """Yield digits from the long division of numerator by denominator, with None indicating a decimal point."""
+    if not denominator:
+        raise ZeroDivisionError("division by zero")
     num = list(decompose(numerator, base))
     current = 0
     given_decimal = False
-    last_through = True
+
     while num or current:
+        current *= base
         if num:
-            current *= base
             current += num.pop(0)
-        elif current < denominator:
-            current *= base
-            if not given_decimal:
-                given_decimal = True
-                last_through = False
-                # Indicate decimal point
-                yield None
-            elif last_through:
-                last_through = False
-            else:
-                yield 0
-
+        elif not given_decimal:
+            given_decimal = True
+            yield None
+        if current < denominator and current:
             continue
-        if current == 0:
-            yield 0
-            continue
-        if current >= denominator:
-            div, current = divmod(current, denominator)
-            yield div
-            last_through = True
-
-
-def find_cycle(
-    sequence: Iterable[int],
-) -> tuple[tuple[int, ...], tuple[int, ...]]:
-    """Return non-repeating digits and repeating sequence from digit sequence."""
-    digits = []
-    gen = iter(sequence)
-    last = next(gen)
-    digits.append(last)
-
-    graph: dict[int, list[tuple[int, int]]] = {}
-
-    current_potential_chain: list[int] = [last]
-    chains: list[tuple[int, ...]] = []
-
-    for digit in gen:
-        digits.append(digit)
-
-        graph.setdefault(last, [])
-        reached_prior = graph[last]
-        for index, (number, count) in enumerate(reached_prior):
-            if number != digit:
-                continue
-            reached_prior[index] = (digit, count + 1)
-            if current_potential_chain and current_potential_chain[0] == digit:
-                ##                print(f'{current_potential_chain = }')
-                new_chain = (
-                    current_potential_chain[-1],
-                    *tuple(current_potential_chain[:-1]),
-                )
-                if new_chain in chains:
-                    print(f"{graph = }")
-                    assert next(gen) == new_chain[0]
-                    return (
-                        tuple(digits[: -(len(new_chain) * 3 + 2)]),
-                        new_chain,
-                    )
-                chains.append(new_chain)
-                current_potential_chain.clear()
-            current_potential_chain.append(digit)
-            break
-        else:
-            reached_prior.append((digit, 1))
-            current_potential_chain.clear()
-
-        last = digit
-    ##    print(f'{graph = }')
-    ##    print(f'{chains = }')
-    return tuple(digits), ()
+        div, current = divmod(current, denominator)
+        yield div
 
 
 def long_division_cycle(
@@ -138,46 +76,25 @@ def long_division_cycle(
     denominator: int,
     base: int = 10,
 ) -> int:
-    """Return digits in long division cycle."""
+    """Return number of cyclical digits in long division."""
     num = list(decompose(numerator, base))
     current = 0
-    given_decimal = False
-    last_through = True
 
-    remainder_table: Counter[int] = Counter()
+    remainder_pos_table: dict[int, int] = {}
 
     digit_place = 0
 
     while num or current:
+        current *= base
+        digit_place += 1
         if num:
-            current *= base
             current += num.pop(0)
-        elif current < denominator:
-            current *= base
-            if not given_decimal:
-                given_decimal = True
-                last_through = False
-                # Indicate decimal point
-            ##                yield None
-            elif last_through:
-                last_through = False
-            else:
-                digit_place += 1
-            ##                yield 0
-
+        if current < denominator and current:
             continue
-        if current == 0:
-            digit_place += 1
-            ##            yield 0
-            continue
-        if current >= denominator:
-            div, current = divmod(current, denominator)
-            digit_place += 1
-            ##            yield div
-            last_through = True
-            if remainder_table[current]:
-                return digit_place - remainder_table[current]
-            remainder_table[current] = digit_place
+        div, current = divmod(current, denominator)
+        if remainder_pos_table.get(current) is not None:
+            return digit_place - remainder_pos_table[current]
+        remainder_pos_table[current] = digit_place
     return 0
 
 
