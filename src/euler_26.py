@@ -37,12 +37,17 @@ def decompose_big_endian(
 ) -> Generator[int, None, None]:
     """Yield decomposition values of value by base in big endian order."""
     while value > 0:
+        # If you haven't seen it before, divmod is a more efficient way
+        # to calculate (x//y, x%y), ie (true divisions, remainder), similar
+        # to the way the actual asm instruction for division works.
         value, div = divmod(value, base)
         yield div
 
 
 def decompose(value: int, base: int = 10) -> tuple[int, ...]:
     """Return decomposition values of value by base in little endian order."""
+    # Just reverse the order, but that does mean it can't be a generator
+    # anymore.
     return tuple(decompose_big_endian(value, base))[-1::-1]
 
 
@@ -58,13 +63,26 @@ def long_division(
     current = 0
     given_decimal = False
 
+    # While we still have something in accumulator (current) or digits to pop
+    # from decomposition,
     while num or current:
+        # Change accumulator value to next digit place up
+        # Ie if accumulator was always base 2, this would be equivalent:
+        # current <<= 1
         current *= base
+        # If we have numbers in decomposition yet, add them
+        # Again if was base 2, equivalent would be:
+        # current |= num.pop(0)
         if num:
             current += num.pop(0)
         elif not given_decimal:
+            # If no numbers to pop and we haven't marked decimal place yet,
+            # do so.
             given_decimal = True
             yield None
+        # If can't do full division and nonzero current value, don't yield
+        # full division, need more digits. If is zero, do yield, because
+        # need more decimal places for following digits.
         if current < denominator and current:
             continue
         div, current = divmod(current, denominator)
@@ -76,15 +94,21 @@ def long_division_cycle(
     denominator: int,
     base: int = 10,
 ) -> int:
-    """Return number of cyclical digits in long division."""
+    """Return number of cyclical digits in long division of numerator by denominator."""
+    if not denominator:
+        raise ZeroDivisionError("division by zero")
     num = list(decompose(numerator, base))
     current = 0
 
+    # Keep track of mapping between remainders and digit places
     remainder_pos_table: dict[int, int] = {}
 
+    # Because not actually yielding division return value,
+    # need to keep track of which digit of answer we are currently on
     digit_place = 0
 
     while num or current:
+        # See long_division for more information
         current *= base
         digit_place += 1
         if num:
@@ -92,8 +116,15 @@ def long_division_cycle(
         if current < denominator and current:
             continue
         div, current = divmod(current, denominator)
+
+        # If we have seen this remainder value before,
         if remainder_pos_table.get(current) is not None:
+            # we are in a cycle, so cycle length is difference between
+            # current digit place and when we first saw this remainder
             return digit_place - remainder_pos_table[current]
+        # Have not seen this remainder before, remember place for the
+        # future for if we see this remainder again to calculate cycle
+        # length.
         remainder_pos_table[current] = digit_place
     return 0
 
