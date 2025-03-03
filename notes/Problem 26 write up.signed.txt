@@ -1,0 +1,75 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Project Euler Problem 26 asks you to consider the decimal values of
+fractions following the format of 1/d, where d is a number in the range
+of [2, 1000). Some of these fractions, such as 1/3, 1/6, 1/7, and 1/9
+have infinitely repeating digit sequences, which they call cycles. This
+problem asks which value of d has the longest recurring cycle in its
+decimal fraction part.
+
+For my approach, I knew IEEE-754 floating point numbers would fail me if
+I tried using them to find exact values for division, because IEEE-754
+floating point numbers use scientific notation to keep track of the
+value of a number, and with a finite number of bits there are some
+fractional numbers that are impossible to be represented in base 2. I
+remembered about long division, wherein we can find the value of a
+division up to a particular digit in the result, and that sounded like a
+great starting point.
+
+Long division can be set up as dividing parts of the numerator by the
+denominator. Say we wanted to do 467 / 3. First, we would break the 467
+into individual places in base 10, so in this case 4, 6, and 7, in that
+order. We see 4 can be divided by 3 1 time and with a remainder of 1, so
+we remember 1 in the final result and keep 1 in an accumulator of what
+the current number we are trying to divide is. Every time we still have
+digits in the accumulator at the end of a step, we put them one place
+higher, ie multiply by 10, so now we have 10 in the accumulator. We
+still have digits left, so we add the next one, 6, to the accumulator,
+so we now have 16. 16 divides by 3 5 times with a remainder of 1, so we
+add the digit 5 to our final result and set the accumulator to 1. Next
+iteration, accumulator is 10 now, we still have digits, so now we add 7
+to accumulator, so 17. 17 divides by 3 5 times with a remainder of 2, so
+add digit 5 to result and set accumulator to 2. Next iteration,
+accumulator is now 20, and there are no more digits left to add. 20
+divides by 3 6 times with a remainder of 2, so add 6 to output and
+accumulator is now 2 again. This keep happening forever, 2 -> 20 -> 2,
+adding 6 to the output forever, because the accumulator never becomes 0.
+
+So now that we can do long division, now we just have to modify it to
+stop when we see a repeat value in the accumulator and keep track of how
+many digits in the answer it has been since we saw the repeat value the
+first time. This can easily be done by having a counter that increments
+for every digit of the answer we find out, and on every step recording
+the current accumulator value in a table mapping accumulator values to
+digit counter place where we first saw this accumulator value, and then
+stopping if we ever see the current accumulator value in the table,
+because that means we've fallen into a cycle. In that event, the cycle
+length is simply the difference between the current digit counter place
+and what the digit counter place was the first time we had this
+accumulator value, which we recorded in that table. In the event the
+division completes, the accumulator will reach 0 and there will have
+been no repeating accumulator values, so therefore there was no cycle,
+ie cycle of length 0.
+
+Now that we can find the length of a long division cycle from a given
+numerator and denominator, all we need to do is simply test dividing 1
+by d for every d in the range of [2, 1000) and keep track of the longest
+cycle count we have found so far and which particular value of d created
+this cycle.
+-----BEGIN PGP SIGNATURE-----
+
+wsFcBAEBCAAQBQJnxhncCRC8avVWByMXfQAAmtQQAFE+izhoC0+ZmNeMqL0tYFcu
+IIgufcpPd/Qf/dZ6H5CwIuovkNCB5K7rRz977Ha0N9oG/ujCemv5nqohgw/ZquVc
+/IerAfGRfIoXNyqzgcuDDBayY32bd/mU1+jVp4pljLl71UlJTZBu7apgjqiLVyl8
+YTylhLA7WN13rBkzJjXjxGNrI/YlJJXzm/c7MwkFjgmHFvJl3AYAlV0i6SkGJ7SJ
+puffuKMXU4qRbSq3+HAKIeuGpn85t1LByas7iMaSN4rMHZmjhNy1lrqrM3P7z0ot
+z1I7DSDyYjMimG9mHxsA7JKLIcJESpxXQk8zVZzNCWPNXCGRYd5hb7g08NEqEcgR
+au0whqWK5+Sc5u1l/CWea6eKBfO3knrtmYQ/GN/czhRqzAeOCDjR+98Q6GvvRNAw
+f7rmVKMgr8xa4rP6DVvfhOU/8ch00pv5iVuP/VameWPxHdwp2o7aOiiQQ6KJrQKG
+bjGbQUq3KmEGYD/MNUrUUEgA2VkbI/9waj9vG+SUqTL+seoDB415gmIAvQKJIZwA
+kq2i1lhCNMdotrcYv1GLrHewkRq65VhYgG0CNOTY926d0lOwBG6Vl0Z4J95yCqKZ
+IbuwoX4AQWvam4DwJfDpv/rGtGY7WxOEkkKSDiTFlYwqfKumsLxo2OD76UnV06Yo
+iPSKHfigDAePf39sdg0O
+=sSf0
+-----END PGP SIGNATURE-----
