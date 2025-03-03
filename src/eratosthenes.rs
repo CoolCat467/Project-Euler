@@ -22,7 +22,8 @@ use std::cmp::max;
 pub fn sieve(n: usize) -> Vec<usize> {
     //! Return prime numbers up to n using Sieve of Eratosthenes.
     //!
-    //! Based on https://stackoverflow.com/a/49936915/18995127.
+    //! Based on information from https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+    //! and https://stackoverflow.com/a/49936915/18995127.
 
     // Create a vector of boolean flags initialized to true
     let mut flags = vec![true; max(2, n) + 1];

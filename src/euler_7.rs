@@ -21,6 +21,7 @@ use crate::eratosthenes::sieve;
 
 fn estimate_search_size(k: usize) -> usize {
     //! Estimate the upper bound for the k-th prime number using the Prime Number Theorem
+    //! Based on information from https://en.wikipedia.org/wiki/Prime_number_theorem
     if k < 6 {
         return 15; // A small constant for small k values
     }
