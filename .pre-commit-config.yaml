@@ -47,8 +47,8 @@ repos:
     rev: v0.9.6
     hooks:
       - id: badgie
-  - repo: https://github.com/crate-ci/typos
-    rev: v1
+  - repo: https://github.com/adhtruong/mirrors-typos
+    rev: v1.31.1
     hooks:
       - id: typos
   - repo: https://github.com/woodruffw/zizmor-pre-commit
